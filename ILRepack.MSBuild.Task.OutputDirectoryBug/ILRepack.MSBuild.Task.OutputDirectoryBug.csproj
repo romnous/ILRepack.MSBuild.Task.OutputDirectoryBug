@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net461</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ILRepack.MSBuild.Task" Version="2.0.13"/>
+        <PackageReference Include="System.Reactive" Version="4.1.3"/>
+    </ItemGroup>
+
+    <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' And '$(TargetFramework)' == 'net461'">
+        <ItemGroup>
+            <InputAssemblies Include="System.Reactive.dll"/>
+        </ItemGroup>
+        <ItemGroup>
+            <DoNotInternalizeAssemblies Include="System.Reactive"/>
+            <DoNotInternalizeAssemblies Include="ILRepack.MSBuild.Task.OutputDirectoryBug"/>
+        </ItemGroup>
+        <ILRepack
+                Parallel="true"
+                InputAssemblies="@(InputAssemblies)"
+                OutputType="$(OutputType)"
+                OutputAssembly="packed/$(AssemblyName).dll"
+                MainAssembly="$(AssemblyName).dll"
+                WorkingDirectory="$(OutputPath)"/>
+    </Target>
+
+</Project>
